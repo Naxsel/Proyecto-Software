@@ -1,10 +1,13 @@
+package client;
+
 import java.awt.*;
+import java.io.Serializable;
 
 /**
  * Book object
  * Created by agustin on 12/3/15.
  */
-public class Libro {
+public class Libro implements Serializable {
     //Atributes
     private String title;
     private String isbn;
