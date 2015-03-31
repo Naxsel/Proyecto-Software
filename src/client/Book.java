@@ -7,7 +7,7 @@ import java.io.Serializable;
  * Book object
  * Created by agustin on 12/3/15.
  */
-public class Libro implements Serializable {
+public class Book implements Serializable {
     //Atributes
     private String title;
     private String isbn;
@@ -25,8 +25,8 @@ public class Libro implements Serializable {
      * @param date = book's date
      * @param img = book's img
      */
-    public Libro(String title, String isbn, String author, String genre,
-        String date, Image img){
+    public Book(String title, String isbn, String author, String genre,
+                String date, Image img){
         this.title = title;
         this.isbn = isbn;
         this.author = author;
@@ -128,5 +128,10 @@ public class Libro implements Serializable {
      */
     public void setImg(Image img){
         this.img = img;
+    }
+
+    public String toString(){
+        return "ISBN: " + isbn + "\nTitle: " + title + "\nAuthor: " + author + "\nGenre: " + genre + "\nDate: " + date +
+                "\nImage: " + img;
     }
 }
