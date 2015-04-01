@@ -1,7 +1,4 @@
-package Util;
-
-import Util.Reply;
-import Util.Request;
+package util;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

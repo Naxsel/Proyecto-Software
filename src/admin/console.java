@@ -2,7 +2,7 @@ package admin;
 
 import java.io.IOException;
 import java.util.Scanner;
-import Util.*;
+import util.*;
 
 /**
  * Created by agustin on 1/4/15.
