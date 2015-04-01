@@ -1,4 +1,4 @@
-package client;
+package Util;
 
 import java.io.Serializable;
 
@@ -7,6 +7,7 @@ import java.io.Serializable;
  * Created by agustin on 31/3/15.
  */
 public class Request<T> implements Serializable {
+
     public enum TypeRequest{
         ISBN, TITLE, AUTHOR, PUBLISHER, GENRE, DATE, ADD, EDIT, DELETE
     }
@@ -18,6 +19,17 @@ public class Request<T> implements Serializable {
     private TypeRequest request;
     private Sort sort;
     private T dummy;
+
+    /**
+     * Constructor
+     * @param request : Client's request
+     * @param dummy : object to send
+     */
+    public Request(TypeRequest request, T dummy) {
+        this.request = request;
+        this.dummy = dummy;
+        this.sort = Sort.NONE;
+    }
 
     /**
      * Constructor

@@ -1,4 +1,7 @@
-package client;
+package Util;
+
+import Util.Reply;
+import Util.Request;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
