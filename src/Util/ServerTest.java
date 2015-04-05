@@ -22,7 +22,9 @@ public class ServerTest {
         System.out.println("SERVER");
         System.out.println("****************************************");
         System.out.println((Request) dummyInput.readObject());
-
-        dummyOutput.writeObject(new Reply<String>(Reply.TypeReply.OK, "Test-Server"));
+        
+        Book dummy = new Book("T-Title","T-ISBN","T-Author","T-Genre","T-Date","http://pythoniza.me/wp-content/uploads/2014/10/ibHNQU.png","T-Publisher","T-Info");
+        
+        dummyOutput.writeObject(new Reply<String>(Reply.TypeReply.BOOK, "http://pythoniza.me/wp-content/uploads/2014/10/ibHNQU.png"));
     }
 }
