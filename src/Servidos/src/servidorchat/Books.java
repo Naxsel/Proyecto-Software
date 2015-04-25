@@ -34,7 +34,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Books.findByGenre", query = "SELECT b FROM Books b WHERE b.genre = :genre"),
     @NamedQuery(name = "Books.findByDate", query = "SELECT b FROM Books b WHERE b.date = :date"),
     @NamedQuery(name = "Books.findByImg", query = "SELECT b FROM Books b WHERE b.img = :img"),
-    @NamedQuery(name = "Books.findByPublisher", query = "SELECT b FROM Books b WHERE b.publisher = :publisher")})
+    @NamedQuery(name = "Books.findByPublisher", query = "SELECT b FROM Books b WHERE b.publisher = :publisher"),
+    @NamedQuery(name = "Books.findByEditorial", query = "SELECT b FROM Books b WHERE b.editorial = :editorial")})
 public class Books implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -60,6 +61,8 @@ public class Books implements Serializable {
     @Lob
     @Column(name = "info")
     private String info;
+    @Column(name = "editorial")
+    private String editorial;
 
     public Books() {
     }
@@ -143,6 +146,14 @@ public class Books implements Serializable {
 
     public void setInfo(String info) {
         this.info = info;
+    }
+
+    public String getEditorial() {
+        return editorial;
+    }
+
+    public void setEditorial(String editorial) {
+        this.editorial = editorial;
     }
 
     @Override
