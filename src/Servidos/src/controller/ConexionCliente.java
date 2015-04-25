@@ -1,12 +1,22 @@
-package servidorchat;
+package controller;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import servidorchat.Entradas;
+import servidorchat.TratamientoEntradas;
+import servidorchat.Usuarios;
+import util.Book;
+import util.Reply;
+import util.Request;
 
 
 /**
@@ -28,76 +38,81 @@ public class ConexionCliente extends Thread implements Observer{
     
     private TratamientoEntradas entradas;
     private Entradas entradasBD;
-    private DataInputStream entradaDatos;
-    private DataOutputStream salidaDatos;
+    private ObjectInputStream entradaDatos;
+    private ObjectOutputStream salidaDatos;
     
-    public ConexionCliente (Socket socket, TratamientoEntradas entradas, Usuarios usuarios, ConcurrentHashMap hashUsuario, Entradas entradasBD){
-        this.hashUsuario = hashUsuario;
+    public ConexionCliente (Socket socket){
         this.socket = socket;
-        this.entradas = entradas;
-        this.usuarios = usuarios;
-        this.entradasBD = entradasBD;
+        
         
         
         try {
-            entradaDatos = new DataInputStream(socket.getInputStream());
-            salidaDatos = new DataOutputStream(socket.getOutputStream());
+            entradaDatos = new ObjectInputStream(socket.getInputStream());
+            salidaDatos = new ObjectOutputStream(socket.getOutputStream());
+            System.out.println("SERVER");
+            System.out.println("****************************************");
+            System.out.println((Request) entradaDatos.readObject());
+        
+            Book dummy = new Book("T-Title","T-ISBN","T-Author","T-Genre","T-Date","http://pythoniza.me/wp-content/uploads/2014/10/ibHNQU.png","T-Publisher","T-Info");
+        
+            salidaDatos.writeObject(new Reply<String>(Reply.TypeReply.BOOK, "http://pythoniza.me/wp-content/uploads/2014/10/ibHNQU.png"));
         } catch (IOException ex) {
             System.out.println("Error al crear los stream de entrada y salida : " + ex.getMessage());
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(ConexionCliente.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
     @Override
     public void run(){
-        String entradaRecibida;
+        Request entradaRecibida;
         boolean conectado = true;
-        // Se apunta a la lista de observadores de mensajes
-        entradas.addObserver(this);
+        // Se apunta a la lista de observadores de mensajesW
         
         while (conectado) {
             try {
                 // Lee un mensaje enviado por el cliente
-                entradaRecibida = entradaDatos.readUTF();
-                System.out.println(entradaRecibida);
-                String[] opciones = entradaRecibida.split("-");
-                switch(opciones[0]) {
-                    case ALTA:
-                        //System.out.println("Hola");
-                        if (hashUsuario.containsKey(opciones[1])) {
-                            salidaDatos.writeUTF("ALTA-false-El usuario ya está"
-                                                 + " logueado.");
-                        } else {
-                            if (usuarios.AltaUsuario(opciones[1], opciones[2])) {
-                                login = opciones[1];
-                                hashUsuario.put(opciones[1], opciones[2]);
-    //                            String ss = (String) hashUsuario.get(opciones[1]);
-                                salidaDatos.writeUTF("ALTA-true");
-                            } else {
-                                salidaDatos.writeUTF("ALTA-false-Usuario y contraseña"
-                                                     + " no coinciden.");
-                            }
-                        }
-                        break;
-                    case BAJA:
-                        if (login != null) {
-                            hashUsuario.remove(login);
-                            login = null;
-                            salidaDatos.writeUTF("BAJA-true");
-                        } else {
-                            salidaDatos.writeUTF("BAJA-false");
-                        }
-                        
-                        break;
-                    case ELIMINAR:
-                        break;
-                    case ENTRADA:
-                        if (login != null) {
-                            //entradas.setEntrada(entradaRecibida);
-                            entradasBD.entrada(login, opciones[1], opciones[2]);
-                        }
-                        
-                        break;
-                }
+                entradaRecibida = (Request) entradaDatos.readObject();
+                System.out.println("OP " + entradaRecibida);
+//                String[] opciones = entradaRecibida.split("-");
+//                switch(opciones[0]) {
+//                    case ALTA:
+//                        //System.out.println("Hola");
+//                        if (hashUsuario.containsKey(opciones[1])) {
+//                            salidaDatos.writeUTF("ALTA-false-El usuario ya está"
+//                                                 + " logueado.");
+//                        } else {
+//                            if (usuarios.AltaUsuario(opciones[1], opciones[2])) {
+//                                login = opciones[1];
+//                                hashUsuario.put(opciones[1], opciones[2]);
+//    //                            String ss = (String) hashUsuario.get(opciones[1]);
+//                                salidaDatos.writeUTF("ALTA-true");
+//                            } else {
+//                                salidaDatos.writeUTF("ALTA-false-Usuario y contraseña"
+//                                                     + " no coinciden.");
+//                            }
+//                        }
+//                        break;
+//                    case BAJA:
+//                        if (login != null) {
+//                            hashUsuario.remove(login);
+//                            login = null;
+//                            salidaDatos.writeUTF("BAJA-true");
+//                        } else {
+//                            salidaDatos.writeUTF("BAJA-false");
+//                        }
+//                        
+//                        break;
+//                    case ELIMINAR:
+//                        break;
+//                    case ENTRADA:
+//                        if (login != null) {
+//                            //entradas.setEntrada(entradaRecibida);
+//                            entradasBD.entrada(login, opciones[1], opciones[2]);
+//                        }
+//                        
+//                        break;
+//                }
                 //salidaDatos.writeUTF("ok");
                 // Pone el mensaje recibido en mensajes para que se notifique 
                 // a sus observadores que hay un nuevo mensaje.
@@ -114,6 +129,8 @@ public class ConexionCliente extends Thread implements Observer{
                 } catch (IOException ex2) {
                     System.out.println("Error al cerrar los stream de entrada y salida :" + ex2.getMessage());
                 }
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(ConexionCliente.class.getName()).log(Level.SEVERE, null, ex);
             }
         }   
     }
