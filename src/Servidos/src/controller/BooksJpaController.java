@@ -5,7 +5,7 @@
  */
 package controller;
 
-import model.Books;
+import Util.Books;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.EntityManager;

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package model;
+package Util;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
@@ -64,6 +64,19 @@ public class Books implements Serializable {
     @Column(name = "editorial")
     private String editorial;
 
+    public Books(Integer idBook, String title, String isbn, String author, String genre, String date, String img, String publisher, String info, String editorial) {
+        this.idBook = idBook;
+        this.title = title;
+        this.isbn = isbn;
+        this.author = author;
+        this.genre = genre;
+        this.date = date;
+        this.img = img;
+        this.publisher = publisher;
+        this.info = info;
+        this.editorial = editorial;
+    }
+    
     public Books() {
     }
 
@@ -177,8 +190,9 @@ public class Books implements Serializable {
     }
 
     @Override
-    public String toString() {
-        return "servidorchat.Books[ idBook=" + idBook + " ]";
+    public String toString(){
+        return "ID: " + idBook + "\nISBN: " + isbn + "\nTitle: " + title + "\nAuthor: " + author + "\nGenre: " + genre + "\nDate: " + date +
+                "\nImage: " + img + "\nEditor: " + publisher + "\nDescripción: " + info;
     }
     
 }

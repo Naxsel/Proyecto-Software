@@ -6,13 +6,14 @@
 package controller;
 
 import controller.BooksJpaController;
-import model.Books;
+import Util.Books;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 import recursos.RecursosXml;
 
 /**
@@ -25,23 +26,25 @@ public class Main {
         Socket socket = null;
         RecursosXml recursos = new RecursosXml();
         
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("ServidosPU");
-        EntityManager em = emf.createEntityManager();
-        BooksJpaController service =  new BooksJpaController(emf);
-        em.getTransaction().begin();
-        Books libro =  new Books();
-        libro.setTitle("Prueba");
-        libro.setDate("12/05/1989");
-        libro.setAuthor("Ruben");
-        libro.setGenre("Masculino");
-        libro.setIsbn("sasa2121");
-        libro.setPublisher("sasa");
-        libro.setInfo("Op libro tu");
-        service.create(libro);
-        em.getTransaction().commit();
-        System.out.println("Persisted" + libro);
-        em.close();
-        emf.close();
+//        EntityManagerFactory emf = Persistence.createEntityManagerFactory("ServidosPU");
+//        EntityManager em = emf.createEntityManager();
+//        BooksJpaController service =  new BooksJpaController(emf);
+//        em.getTransaction().begin();
+//        Books libro =  new Books();
+//        TypedQuery<Books> query = em.createNamedQuery("Books.findAll", Books.class);
+//        //System.out.println("");
+//        libro.setTitle("Prueba");
+//        libro.setDate("12/05/1989");
+//        libro.setAuthor("Ruben");
+//        libro.setGenre("Masculino");
+//        libro.setIsbn("sasa2121");
+//        libro.setPublisher("sasa");
+//        libro.setInfo("Op libro tu");
+//        service.create(libro);
+//        em.getTransaction().commit();
+//        System.out.println("Persisted" + libro);
+//        em.close();
+//        emf.close();
         
         try {
             // Se crea el serverSocket

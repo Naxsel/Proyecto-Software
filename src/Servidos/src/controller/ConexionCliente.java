@@ -11,9 +11,15 @@ import java.util.Observer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import Util.Books;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 import servidorchat.Entradas;
 import servidorchat.TratamientoEntradas;
 import servidorchat.Usuarios;
+import servidorchat.exceptions.NonexistentEntityException;
 import util.Book;
 import util.Reply;
 import util.Request;
@@ -51,15 +57,15 @@ public class ConexionCliente extends Thread implements Observer{
             salidaDatos = new ObjectOutputStream(socket.getOutputStream());
             System.out.println("SERVER");
             System.out.println("****************************************");
-            System.out.println((Request) entradaDatos.readObject());
-        
-            Book dummy = new Book("T-Title","T-ISBN","T-Author","T-Genre","T-Date","http://pythoniza.me/wp-content/uploads/2014/10/ibHNQU.png","T-Publisher","T-Info");
-        
-            salidaDatos.writeObject(new Reply<String>(Reply.TypeReply.BOOK, "http://pythoniza.me/wp-content/uploads/2014/10/ibHNQU.png"));
+            
+//            Request req = (Request) entradaDatos.readObject();
+//            System.out.println( (Books) req.getDummy());
+//        
+//            Book dummy = new Book("T-Title","T-ISBN","T-Author","T-Genre","T-Date","http://pythoniza.me/wp-content/uploads/2014/10/ibHNQU.png","T-Publisher","T-Info");
+//        
+//            salidaDatos.writeObject(new Reply<String>(Reply.TypeReply.BOOK, "http://pythoniza.me/wp-content/uploads/2014/10/ibHNQU.png"));
         } catch (IOException ex) {
             System.out.println("Error al crear los stream de entrada y salida : " + ex.getMessage());
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(ConexionCliente.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -74,48 +80,20 @@ public class ConexionCliente extends Thread implements Observer{
                 // Lee un mensaje enviado por el cliente
                 entradaRecibida = (Request) entradaDatos.readObject();
                 System.out.println("OP " + entradaRecibida);
-//                String[] opciones = entradaRecibida.split("-");
-//                switch(opciones[0]) {
-//                    case ALTA:
-//                        //System.out.println("Hola");
-//                        if (hashUsuario.containsKey(opciones[1])) {
-//                            salidaDatos.writeUTF("ALTA-false-El usuario ya está"
-//                                                 + " logueado.");
-//                        } else {
-//                            if (usuarios.AltaUsuario(opciones[1], opciones[2])) {
-//                                login = opciones[1];
-//                                hashUsuario.put(opciones[1], opciones[2]);
-//    //                            String ss = (String) hashUsuario.get(opciones[1]);
-//                                salidaDatos.writeUTF("ALTA-true");
-//                            } else {
-//                                salidaDatos.writeUTF("ALTA-false-Usuario y contraseña"
-//                                                     + " no coinciden.");
-//                            }
-//                        }
-//                        break;
-//                    case BAJA:
-//                        if (login != null) {
-//                            hashUsuario.remove(login);
-//                            login = null;
-//                            salidaDatos.writeUTF("BAJA-true");
-//                        } else {
-//                            salidaDatos.writeUTF("BAJA-false");
-//                        }
-//                        
-//                        break;
-//                    case ELIMINAR:
-//                        break;
-//                    case ENTRADA:
-//                        if (login != null) {
-//                            //entradas.setEntrada(entradaRecibida);
-//                            entradasBD.entrada(login, opciones[1], opciones[2]);
-//                        }
-//                        
-//                        break;
-//                }
-                //salidaDatos.writeUTF("ok");
-                // Pone el mensaje recibido en mensajes para que se notifique 
-                // a sus observadores que hay un nuevo mensaje.
+                switch (entradaRecibida.getRequest()) {
+                    case ADD:
+                        agregar(entradaRecibida);
+                        break;
+                    case DELETE:
+                        borrar(entradaRecibida);
+                        break;
+                    case ISBN:
+                        buscarByISBN(entradaRecibida);
+                        break;
+                    case EDIT:
+                        modificar(entradaRecibida);
+                        break;
+                }
             } catch (IOException ex) {
                 if (login != null) {
                     hashUsuario.remove(login);
@@ -145,4 +123,81 @@ public class ConexionCliente extends Thread implements Observer{
             System.out.println("Error al enviar mensaje al cliente (" + ex.getMessage() + ").");
         }
     }
+
+    private void agregar(Request entradaRecibida) {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("ServidosPU");
+        EntityManager em = emf.createEntityManager();
+        BooksJpaController service =  new BooksJpaController(emf);
+        em.getTransaction().begin();
+        service.create((Books) entradaRecibida.getDummy());
+        em.getTransaction().commit();
+        System.out.println("Persisted" + (Books) entradaRecibida.getDummy());
+        em.close();
+        emf.close();
+        try {
+            salidaDatos.writeObject(new Reply<String>(Reply.TypeReply.OK, "http://pythoniza.me/wp-content/uploads/2014/10/ibHNQU.png"));
+        } catch (IOException ex) {
+            Logger.getLogger(ConexionCliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void borrar(Request entradaRecibida) {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("ServidosPU");
+        EntityManager em = emf.createEntityManager();
+        BooksJpaController service =  new BooksJpaController(emf);
+        em.getTransaction().begin();    
+        try {
+            service.destroy(Integer.parseInt((String) entradaRecibida.getDummy()));
+            em.getTransaction().commit();
+            System.out.println("Borrado " + entradaRecibida.getDummy());
+            em.close();
+            emf.close();
+            salidaDatos.writeObject(new Reply<String>(Reply.TypeReply.OK, "http://pythoniza.me/wp-content/uploads/2014/10/ibHNQU.png"));
+        } catch (NonexistentEntityException ex) {
+            Logger.getLogger(ConexionCliente.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(ConexionCliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void buscarByISBN(Request entradaRecibida) {
+        Books libro =  new Books();
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("ServidosPU");
+        EntityManager em = emf.createEntityManager();
+        TypedQuery<Books> query = em.createNamedQuery("Books.findByIsbn", Books.class)
+                                                        .setParameter("isbn", entradaRecibida.getDummy());
+        System.out.println(query.getResultList().get(0));
+        libro = query.getResultList().get(0);
+//        em.getTransaction().commit();
+        //System.out.println("Borrado " + entradaRecibida.getDummy());
+        em.close();
+        emf.close();
+        
+        try {
+            salidaDatos.writeObject(new Reply<Books>(Reply.TypeReply.BOOK, libro));
+        } catch (IOException ex) {
+            Logger.getLogger(ConexionCliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
+
+    private void modificar(Request entradaRecibida) {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("ServidosPU");
+        EntityManager em = emf.createEntityManager();
+        BooksJpaController service =  new BooksJpaController(emf);
+        em.getTransaction().begin();
+        try {
+            service.edit((Books) entradaRecibida.getDummy());
+        } catch (Exception ex) {
+            Logger.getLogger(ConexionCliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        em.getTransaction().commit();
+        System.out.println("Modificado" + (Books) entradaRecibida.getDummy());
+        em.close();
+        emf.close();
+        try {
+            salidaDatos.writeObject(new Reply<String>(Reply.TypeReply.OK, "http://pythoniza.me/wp-content/uploads/2014/10/ibHNQU.png"));
+        } catch (IOException ex) {
+            Logger.getLogger(ConexionCliente.class.getName()).log(Level.SEVERE, null, ex);
+        }    }
 } 
