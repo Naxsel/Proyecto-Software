@@ -3,7 +3,7 @@
     <conexion>
         <host>localhost</host>
         <puerto>8080</puerto>
-        <hostBBDD>jdbc:mysql://localhost/agenda</hostBBDD>
+        <hostBBDD>jdbc:mysql://localhost/opbooks</hostBBDD>
         <driver>com.mysql.jdbc.Driver</driver>
         <user>root</user>
         <passwd></passwd>

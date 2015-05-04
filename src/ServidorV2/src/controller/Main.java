@@ -6,6 +6,7 @@
 package controller;
 
 
+import conexionBBDD.ConexionBBDD;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -20,7 +21,8 @@ public class Main {
         ServerSocket servidor = null; 
         Socket socket = null;
         RecursosXml recursos = new RecursosXml();
-        
+        ConexionBBDD conexion = new ConexionBBDD(recursos);
+        BooksController booksController = new BooksController(conexion.conectar());
 //        EntityManagerFactory emf = Persistence.createEntityManagerFactory("ServidosPU");
 //        EntityManager em = emf.createEntityManager();
 //        BooksJpaController service =  new BooksJpaController(emf);
@@ -52,7 +54,7 @@ public class Main {
                 socket = servidor.accept();
                 System.out.println("Cliente con la IP " + socket.getInetAddress().getHostName() + " conectado.");
 
-                ConexionCliente cc = new ConexionCliente(socket);
+                ConexionCliente cc = new ConexionCliente(socket, booksController);
                 cc.start();
 
             }

@@ -23,6 +23,7 @@ import javax.persistence.TypedQuery;
 
 import Util.*;
 import Util.exceptions.NonexistentEntityException;
+import java.sql.SQLException;
 
 
 /**
@@ -31,6 +32,7 @@ import Util.exceptions.NonexistentEntityException;
 public class ConexionCliente extends Thread implements Observer{
     
     private Socket socket; 
+    private BooksController booksController;
     
     private static ConcurrentHashMap hashUsuario;
     private String login;
@@ -38,9 +40,9 @@ public class ConexionCliente extends Thread implements Observer{
     private ObjectInputStream entradaDatos;
     private ObjectOutputStream salidaDatos;
     
-    public ConexionCliente (Socket socket){
+    public ConexionCliente (Socket socket, BooksController booksController){
         this.socket = socket;
-        
+        this.booksController = booksController;
         
         
         try {
@@ -118,15 +120,9 @@ public class ConexionCliente extends Thread implements Observer{
     }
 
     private void agregar(Request entradaRecibida) {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("ServidosPU");
-        EntityManager em = emf.createEntityManager();
-        BooksJpaController service =  new BooksJpaController(emf);
-        em.getTransaction().begin();
-        service.create((Books) entradaRecibida.getDummy());
-        em.getTransaction().commit();
-        System.out.println("Persisted" + (Books) entradaRecibida.getDummy());
-        em.close();
-        emf.close();
+        System.out.println((Books) entradaRecibida.getDummy());
+        booksController.create((Books) entradaRecibida.getDummy());
+      
         try {
             salidaDatos.writeObject(new Reply<String>(Reply.TypeReply.OK, "http://pythoniza.me/wp-content/uploads/2014/10/ibHNQU.png"));
         } catch (IOException ex) {
@@ -135,42 +131,22 @@ public class ConexionCliente extends Thread implements Observer{
     }
 
     private void borrar(Request entradaRecibida) throws IOException {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("ServidosPU");
-        EntityManager em = emf.createEntityManager();
-        BooksJpaController service =  new BooksJpaController(emf);
-        em.getTransaction().begin();    
-
         try {
-            service.destroy(Integer.parseInt((String) entradaRecibida.getDummy()));
-            em.getTransaction().commit();
-            System.out.println("Borrado " + entradaRecibida.getDummy());
-            em.close();
-            emf.close();
+            booksController.delete((String) entradaRecibida.getDummy());
             salidaDatos.writeObject(new Reply<String>(Reply.TypeReply.OK, "http://pythoniza.me/wp-content/uploads/2014/10/ibHNQU.png"));
-    
-        } catch (NonexistentEntityException ex) {
-            salidaDatos.writeObject(new Reply<String>(Reply.TypeReply.FAIL, "http://pythoniza.me/wp-content/uploads/2014/10/ibHNQU.png"));
+        } catch (SQLException ex) {
+            Logger.getLogger(ConexionCliente.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     private void buscarByISBN(Request entradaRecibida) {
-        Books libro =  new Books();
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("ServidosPU");
-        EntityManager em = emf.createEntityManager();
-        TypedQuery<Books> query = em.createNamedQuery("Books.findByIsbn", Books.class)
-                                                        .setParameter("isbn", entradaRecibida.getDummy());
-        System.out.println(query.getResultList().get(0));
-        libro = query.getResultList().get(0);
-//        em.getTransaction().commit();
-        //System.out.println("Borrado " + entradaRecibida.getDummy());
-        em.close();
-        emf.close();
-        
         try {
-            salidaDatos.writeObject(new Reply<Books>(Reply.TypeReply.BOOK, libro));
-        } catch (IOException ex) {
+            booksController.buscarPorISBN((String) entradaRecibida.getDummy());
+            //salidaDatos.writeObject(new Reply<Books>(Reply.TypeReply.BOOK, libro));
+        } catch (SQLException ex) {
             Logger.getLogger(ConexionCliente.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
         
     }
 
