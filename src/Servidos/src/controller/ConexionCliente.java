@@ -198,9 +198,9 @@ public class ConexionCliente extends Thread implements Observer{
         List<Books> libro =  new Vector();
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("ServidosPU");
         EntityManager em = emf.createEntityManager();
-        TypedQuery<Books> query = em.createNamedQuery("Books.findByIsbn", Books.class)
+        TypedQuery<Books> query = em.createNamedQuery("Books.findByTitle", Books.class)
                                                         .setParameter("title", entradaRecibida.getDummy());
-        System.out.println(query.getResultList().get(0));
+        //System.out.println(query.getResultList().get(0));
         libro = query.getResultList();
 //        em.getTransaction().commit();
         //System.out.println("Borrado " + entradaRecibida.getDummy());
