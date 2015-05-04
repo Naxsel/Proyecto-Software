@@ -6,7 +6,8 @@
 package cliente;
 
 import java.io.IOException;
-
+import util.*;
+import java.util.Vector;
 /**
  *
  * @author adrian
@@ -38,7 +39,8 @@ public class Menu extends javax.swing.JFrame {
 
         jToolBar1.setRollover(true);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "ISBN", "Título" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { 
+			"ISBN", "Título", "Autor", "Genero", "Editorial", "Fecha" }));
         jToolBar1.add(jComboBox1);
 
         jTextField1.setPreferredSize(new java.awt.Dimension(250, 28));
@@ -59,12 +61,14 @@ public class Menu extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE,
+			javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE,
+				30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 270, Short.MAX_VALUE))
         );
 
@@ -77,9 +81,23 @@ public class Menu extends javax.swing.JFrame {
         int seleccion = jComboBox1.getSelectedIndex();
         util.Request<String> peticion;
         switch (seleccion) {
-            case 0: peticion = new util.Request<>(util.Request.TypeRequest.ISBN, util.Request.Sort.NONE, texto);
+            case 0: peticion = new util.Request<>(util.Request.TypeRequest.ISBN,
+						util.Request.Sort.NONE, texto);
                     break;
-            default: peticion = new util.Request<>(util.Request.TypeRequest.TITLE, util.Request.Sort.NONE, texto);
+			case 1: peticion = new util.Request<>(util.Request.TypeRequest.TITLE,
+						util.Request.Sort.NONE, texto);
+                    break;
+			case 2: peticion = new util.Request<>(util.Request.TypeRequest.AUTHOR,
+						util.Request.Sort.NONE, texto);
+                    break;
+			case 3: peticion = new util.Request<>(util.Request.TypeRequest.GENRE,
+						util.Request.Sort.NONE, texto);
+                    break;
+			case 4: peticion = new util.Request<>(util.Request.TypeRequest.PUBLISHER,
+						util.Request.Sort.NONE, texto);
+                    break;
+            default: peticion = new util.Request<>(util.Request.TypeRequest.DATE,
+						util.Request.Sort.NONE, texto);
                     break;
         }
 
@@ -88,6 +106,7 @@ public class Menu extends javax.swing.JFrame {
             util.ClientSend dummy = new util.ClientSend("localhost", 8080);
             // Envío del request y recepción de reply
             util.Reply respuesta = dummy.send2Server(peticion);
+            System.out.println("**" + (Vector)respuesta.getDummy());
             // tratamiento de la respuesta
             if (respuesta.getReply() == util.Reply.TypeReply.OK) {
                 Busqueda nuevaBusqueda = new Busqueda();
