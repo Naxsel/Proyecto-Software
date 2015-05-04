@@ -22,7 +22,6 @@ import javax.persistence.TypedQuery;
 
 
 import Util.*;
-import Util.exceptions.NonexistentEntityException;
 import java.sql.SQLException;
 
 
@@ -151,24 +150,24 @@ public class ConexionCliente extends Thread implements Observer{
     }
 
     private void modificar(Request entradaRecibida) {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("ServidosPU");
-        EntityManager em = emf.createEntityManager();
-        BooksJpaController service =  new BooksJpaController(emf);
-        em.getTransaction().begin();
-        try {
-            service.edit((Books) entradaRecibida.getDummy());
-        } catch (Exception ex) {
-            Logger.getLogger(ConexionCliente.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        em.getTransaction().commit();
-        System.out.println("Modificado" + (Books) entradaRecibida.getDummy());
-        em.close();
-        emf.close();
-        try {
-            salidaDatos.writeObject(new Reply<String>(Reply.TypeReply.OK, "http://pythoniza.me/wp-content/uploads/2014/10/ibHNQU.png"));
-        } catch (IOException ex) {
-            Logger.getLogger(ConexionCliente.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        EntityManagerFactory emf = Persistence.createEntityManagerFactory("ServidosPU");
+//        EntityManager em = emf.createEntityManager();
+//        BooksJpaController service =  new BooksJpaController(emf);
+//        em.getTransaction().begin();
+//        try {
+//            service.edit((Books) entradaRecibida.getDummy());
+//        } catch (Exception ex) {
+//            Logger.getLogger(ConexionCliente.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        em.getTransaction().commit();
+//        System.out.println("Modificado" + (Books) entradaRecibida.getDummy());
+//        em.close();
+//        emf.close();
+//        try {
+//            salidaDatos.writeObject(new Reply<String>(Reply.TypeReply.OK, "http://pythoniza.me/wp-content/uploads/2014/10/ibHNQU.png"));
+//        } catch (IOException ex) {
+//            Logger.getLogger(ConexionCliente.class.getName()).log(Level.SEVERE, null, ex);
+//        }
  }
 
     private void buscarByTitle(Request entradaRecibida) {
