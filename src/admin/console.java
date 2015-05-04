@@ -60,13 +60,13 @@ public class console {
     }
 
     /**
-     * Add a book
+     * Add a Books
      */
     public static void add() throws IOException, ClassNotFoundException {
         Scanner input = new Scanner(System.in);
         String title, isbn, date, author, publisher, genre, description, ruta;
-        Book libro;
-        Request<Book> req;
+        Books libro;
+        Request<Books> req;
         Reply reply;
 
 
@@ -134,10 +134,10 @@ public class console {
             ruta = input.nextLine();
         }
 
-        libro = new Book(title, isbn, author, genre, date, ruta, publisher, description);
+        libro = new Books(title, isbn, author, genre, date, ruta, publisher, description);
         req = new Request<>(Request.TypeRequest.ADD, libro);
 
-        //Send book to server
+        //Send Books to server
         reply = server.send2Server(req);
 
         if(reply.getReply() == Reply.TypeReply.OK){
@@ -149,7 +149,7 @@ public class console {
     }
 
     /**
-     * Delete a book
+     * Delete a Books
      */
     public static void erase() throws IOException, ClassNotFoundException {
         Scanner input = new Scanner(System.in);
@@ -175,14 +175,14 @@ public class console {
     }
 
     /**
-     * Edit a book's information
+     * Edit a Books's information
      */
     public static void edit() throws IOException, ClassNotFoundException {
         Scanner input = new Scanner(System.in);
         String isbn, type, change;
         Request request;
         Reply reply;
-        Book libro;
+        Books libro;
 
         System.out.print("ISBN del libro a borrar: ");
         isbn = input.nextLine();
@@ -196,7 +196,7 @@ public class console {
         request = new Request(Request.TypeRequest.ISBN, isbn);
         reply = server.send2Server(request);
         if (reply.getReply() == Reply.TypeReply.BOOK){
-            libro = (Book) reply.getDummy();
+            libro = (Books) reply.getDummy();
 
             //Pide la nueva info del libro
             while(true) {
