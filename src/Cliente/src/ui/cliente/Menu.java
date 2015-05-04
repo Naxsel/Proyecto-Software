@@ -72,7 +72,6 @@ public class Menu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
         // Generación del Request
         String texto = jTextField1.getText();
         int seleccion = jComboBox1.getSelectedIndex();
@@ -89,7 +88,6 @@ public class Menu extends javax.swing.JFrame {
             util.ClientSend dummy = new util.ClientSend("localhost", 8080);
             // Envío del request y recepción de reply
             util.Reply respuesta = dummy.send2Server(peticion);
-            
             // tratamiento de la respuesta
             if (respuesta.getReply() == util.Reply.TypeReply.OK) {
                 Busqueda nuevaBusqueda = new Busqueda();
@@ -100,7 +98,9 @@ public class Menu extends javax.swing.JFrame {
                 nuevaBusqueda.NuevoLibro((String)respuesta.getDummy());
                 nuevaBusqueda.setVisible(true);
             }
-        } catch (IOException | ClassNotFoundException e) {}
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

@@ -6,61 +6,24 @@
 package Util;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Ruben
  */
-@Entity
-@Table(name = "books")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Books.findAll", query = "SELECT b FROM Books b"),
-    @NamedQuery(name = "Books.findByIdBook", query = "SELECT b FROM Books b WHERE b.idBook = :idBook"),
-    @NamedQuery(name = "Books.findByTitle", query = "SELECT b FROM Books b WHERE b.title = :title"),
-    @NamedQuery(name = "Books.findByIsbn", query = "SELECT b FROM Books b WHERE b.isbn = :isbn"),
-    @NamedQuery(name = "Books.findByAuthor", query = "SELECT b FROM Books b WHERE b.author = :author"),
-    @NamedQuery(name = "Books.findByGenre", query = "SELECT b FROM Books b WHERE b.genre = :genre"),
-    @NamedQuery(name = "Books.findByDate", query = "SELECT b FROM Books b WHERE b.date = :date"),
-    @NamedQuery(name = "Books.findByImg", query = "SELECT b FROM Books b WHERE b.img = :img"),
-    @NamedQuery(name = "Books.findByPublisher", query = "SELECT b FROM Books b WHERE b.publisher = :publisher")})
+
 public class Books implements Serializable {
     private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id_book")
     private Integer idBook;
-    @Basic(optional = false)
-    @Column(name = "title")
     private String title;
-    @Column(name = "isbn")
     private String isbn;
-    @Column(name = "author")
     private String author;
-    @Column(name = "genre")
     private String genre;
-    @Column(name = "date")
     private String date;
-    @Column(name = "img")
     private String img;
-    @Column(name = "publisher")
     private String publisher;
-    @Lob
-    @Column(name = "info")
     private String info;
-    
+
     public Books(Integer idBook, String title, String isbn, String author, String genre, String date, String img, String publisher, String info) {
         this.idBook = idBook;
         this.title = title;
@@ -179,7 +142,7 @@ public class Books implements Serializable {
 
     @Override
     public String toString(){
-        return "ID: " + idBook + "\nISBN: " + isbn + "\nTitle: " + title + "\nAuthor: " + author + "\nGenre: " + genre + "\nDate: " + date +
+        return "ISBN: " + isbn + "\nTitle: " + title + "\nAuthor: " + author + "\nGenre: " + genre + "\nDate: " + date +
                 "\nImage: " + img + "\nEditor: " + publisher + "\nDescripción: " + info;
     }
     

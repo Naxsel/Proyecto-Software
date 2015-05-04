@@ -72,35 +72,35 @@ public class Menu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
         // Generación del Request
         String texto = jTextField1.getText();
         int seleccion = jComboBox1.getSelectedIndex();
-        util.Request<String> peticion;
+        Util.Request<String> peticion;
         switch (seleccion) {
-            case 0: peticion = new util.Request<>(util.Request.TypeRequest.ISBN, util.Request.Sort.NONE, texto);
+            case 0: peticion = new Util.Request<>(Util.Request.TypeRequest.ISBN, Util.Request.Sort.NONE, texto);
                     break;
-            default: peticion = new util.Request<>(util.Request.TypeRequest.TITLE, util.Request.Sort.NONE, texto);
+            default: peticion = new Util.Request<>(Util.Request.TypeRequest.TITLE, Util.Request.Sort.NONE, texto);
                     break;
         }
         
         try {
             // Generación del proceso cliente
-            util.ClientSend dummy = new util.ClientSend("localhost", 8080);
+            Util.ClientSend dummy = new Util.ClientSend("localhost", 8080);
             // Envío del request y recepción de reply
-            util.Reply respuesta = dummy.send2Server(peticion);
-            
+            Util.Reply respuesta = dummy.send2Server(peticion);
             // tratamiento de la respuesta
-            if (respuesta.getReply() == util.Reply.TypeReply.OK) {
+            if (respuesta.getReply() == Util.Reply.TypeReply.OK) {
                 Busqueda nuevaBusqueda = new Busqueda();
                 nuevaBusqueda.setVisible(true);
-            } else if (respuesta.getReply() == util.Reply.TypeReply.BOOK) {
+            } else if (respuesta.getReply() == Util.Reply.TypeReply.BOOK) {
                 Busqueda nuevaBusqueda = new Busqueda();
                 //util.Book libro = (util.Book)respuesta.getDummy();
                 nuevaBusqueda.NuevoLibro((String)respuesta.getDummy());
                 nuevaBusqueda.setVisible(true);
             }
-        } catch (IOException | ClassNotFoundException e) {}
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

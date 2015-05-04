@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package Util;
+package Backup;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -13,10 +8,10 @@ import java.io.Serializable;
 import java.net.URL;
 
 /**
- * Book object
- * Created by agustin on 12/3/15.
+ * BookBAck object
+ Created by agustin on 12/3/15.
  */
-public class Book implements Serializable {
+public class BookBAck implements Serializable {
     //Atributes
     private String title;
     private String isbn;
@@ -36,7 +31,7 @@ public class Book implements Serializable {
      * @param date = book's date
      * @param img = book's img
      */
-    public Book(String title, String isbn, String author, String genre,
+    public BookBAck(String title, String isbn, String author, String genre,
                 String date, String img, String publisher, String info){
         this.title = title;
         this.isbn = isbn;
@@ -178,5 +173,22 @@ public class Book implements Serializable {
     public String toString(){
         return "ISBN: " + isbn + "\nTitle: " + title + "\nAuthor: " + author + "\nGenre: " + genre + "\nDate: " + date +
                 "\nImage: " + img + "\nEditor: " + publisher + "\nDescripción: " + info;
+    }
+
+    /**
+     * A simple test
+     */
+    public static void main(String args[]) throws IOException {
+        BookBAck dummy = new BookBAck("T-Title","T-ISBN","T-Author","T-Genre","T-Date","http://pythoniza.me/wp-content/uploads/2014/10/ibHNQU.png","T-Publisher","T-Info");
+        URL url = new URL(dummy.getImg());
+        //Read a image from Url
+        //Throws MalFormedURLExcaption
+        Image img = ImageIO.read(url);
+        JFrame frame = new JFrame();
+        frame.setSize(600, 800);
+        JLabel label = new JLabel(new ImageIcon(img));
+        frame.add(label);
+        frame.setVisible(true);
+        System.out.print(dummy);
     }
 }

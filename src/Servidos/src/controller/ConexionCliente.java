@@ -12,38 +12,28 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import Util.Books;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
-import servidorchat.Entradas;
-import servidorchat.TratamientoEntradas;
-import servidorchat.Usuarios;
+
 import servidorchat.exceptions.NonexistentEntityException;
-import util.Book;
-import util.Reply;
-import util.Request;
+import Util.*;
 
 
 /**
- * Esta clase gestiona el envio de datos entre el servidor y el cliente al que atiende.
- * 
- * @author Ivan Salas Corrales <http://programando-o-intentandolo.blogspot.com.es/>
+ *
  */
 public class ConexionCliente extends Thread implements Observer{
-    private final String ALTA = "ALTA";
-    private final String ENTRADA = "ENTRADA";
-    private final String ELIMINAR = "ELIMINAR";
-    private final String BAJA = "BAJA";
     
     private Socket socket; 
     
     private static ConcurrentHashMap hashUsuario;
-    private Usuarios usuarios;
     private String login;
     
-    private TratamientoEntradas entradas;
-    private Entradas entradasBD;
     private ObjectInputStream entradaDatos;
     private ObjectOutputStream salidaDatos;
     
@@ -61,7 +51,7 @@ public class ConexionCliente extends Thread implements Observer{
 //            Request req = (Request) entradaDatos.readObject();
 //            System.out.println( (Books) req.getDummy());
 //        
-//            Book dummy = new Book("T-Title","T-ISBN","T-Author","T-Genre","T-Date","http://pythoniza.me/wp-content/uploads/2014/10/ibHNQU.png","T-Publisher","T-Info");
+//            Books dummy = new Books("T-Title","T-ISBN","T-Author","T-Genre","T-Date","http://pythoniza.me/wp-content/uploads/2014/10/ibHNQU.png","T-Publisher","T-Info");
 //        
 //            salidaDatos.writeObject(new Reply<String>(Reply.TypeReply.BOOK, "http://pythoniza.me/wp-content/uploads/2014/10/ibHNQU.png"));
         } catch (IOException ex) {
@@ -79,7 +69,7 @@ public class ConexionCliente extends Thread implements Observer{
             try {
                 // Lee un mensaje enviado por el cliente
                 entradaRecibida = (Request) entradaDatos.readObject();
-                System.out.println("OP " + entradaRecibida);
+                //System.out.println("OP " + entradaRecibida);
                 switch (entradaRecibida.getRequest()) {
                     case ADD:
                         agregar(entradaRecibida);
@@ -90,6 +80,8 @@ public class ConexionCliente extends Thread implements Observer{
                     case ISBN:
                         buscarByISBN(entradaRecibida);
                         break;
+                    case TITLE:
+                        buscarByTitle(entradaRecibida);
                     case EDIT:
                         modificar(entradaRecibida);
                         break;
@@ -141,11 +133,12 @@ public class ConexionCliente extends Thread implements Observer{
         }
     }
 
-    private void borrar(Request entradaRecibida) {
+    private void borrar(Request entradaRecibida) throws IOException {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("ServidosPU");
         EntityManager em = emf.createEntityManager();
         BooksJpaController service =  new BooksJpaController(emf);
         em.getTransaction().begin();    
+
         try {
             service.destroy(Integer.parseInt((String) entradaRecibida.getDummy()));
             em.getTransaction().commit();
@@ -153,10 +146,9 @@ public class ConexionCliente extends Thread implements Observer{
             em.close();
             emf.close();
             salidaDatos.writeObject(new Reply<String>(Reply.TypeReply.OK, "http://pythoniza.me/wp-content/uploads/2014/10/ibHNQU.png"));
+    
         } catch (NonexistentEntityException ex) {
-            Logger.getLogger(ConexionCliente.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(ConexionCliente.class.getName()).log(Level.SEVERE, null, ex);
+            salidaDatos.writeObject(new Reply<String>(Reply.TypeReply.FAIL, "http://pythoniza.me/wp-content/uploads/2014/10/ibHNQU.png"));
         }
     }
 
@@ -199,5 +191,26 @@ public class ConexionCliente extends Thread implements Observer{
             salidaDatos.writeObject(new Reply<String>(Reply.TypeReply.OK, "http://pythoniza.me/wp-content/uploads/2014/10/ibHNQU.png"));
         } catch (IOException ex) {
             Logger.getLogger(ConexionCliente.class.getName()).log(Level.SEVERE, null, ex);
-        }    }
+        }
+ }
+
+    private void buscarByTitle(Request entradaRecibida) {
+        List<Books> libro =  new Vector();
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("ServidosPU");
+        EntityManager em = emf.createEntityManager();
+        TypedQuery<Books> query = em.createNamedQuery("Books.findByIsbn", Books.class)
+                                                        .setParameter("title", entradaRecibida.getDummy());
+        System.out.println(query.getResultList().get(0));
+        libro = query.getResultList();
+//        em.getTransaction().commit();
+        //System.out.println("Borrado " + entradaRecibida.getDummy());
+        em.close();
+        emf.close();
+        
+        try {    
+            salidaDatos.writeObject(new Reply<List>(Reply.TypeReply.BOOK, libro));
+        } catch (IOException ex) {
+            Logger.getLogger(ConexionCliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 } 

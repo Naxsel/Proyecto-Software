@@ -21,7 +21,7 @@ public class MuestraLibro extends javax.swing.JFrame {
     /**
      * Creates new form MuestraLibro
      */
-    public MuestraLibro(util.Book libro) throws IOException {
+    public MuestraLibro(Util.Books libro) throws IOException {
         initComponents();
         
         // Redimensionar
