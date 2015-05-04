@@ -12,5 +12,5 @@ echo "Compilado ./src/cliente"
 javac -d ./bin -cp ./bin ./src/admin/*.java
 echo "Compilado ./src/admin"
 # Servidor
-javac -d ./bin -cp ./bin ./src/servidor/*.java
+javac -d ./bin -cp "./lib/*.jar:./bin" ./src/servidor/*.java
 echo "Compilado ./src/servidor"

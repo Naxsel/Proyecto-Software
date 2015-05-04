@@ -17,7 +17,9 @@ public class RecursosXml {
     // Ruta depende de donde lo tengas alojado el fichero XML
     private final String RUTA
                     =  System.getProperty("user.dir")
-                                + "\\src\\recursos\\conexion.xml";
+                                + System.getProperty("file.separator") +
+                                "config" + System.getProperty("file.separator") +
+                                "conexion.xml";
     private Document documento;
 
     //Atributos a cambiar segun lo que quieras leer
