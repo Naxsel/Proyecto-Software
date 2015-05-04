@@ -5,7 +5,9 @@
  */
 package ui.cliente;
 
+import Util.Books;
 import java.io.IOException;
+import java.util.List;
 
 /**
  *
@@ -95,7 +97,12 @@ public class Menu extends javax.swing.JFrame {
             } else if (respuesta.getReply() == Util.Reply.TypeReply.BOOK) {
                 Busqueda nuevaBusqueda = new Busqueda();
                 //util.Book libro = (util.Book)respuesta.getDummy();
-                nuevaBusqueda.NuevoLibro((String)respuesta.getDummy());
+                //System.out.println((Books)respuesta.getDummy());
+                //nuevaBusqueda.NuevoLibro(((Books)respuesta.getDummy()).getImg());
+                List<Books> lista = (List<Books>) respuesta.getDummy();
+                for (Books libro : lista) {
+                    System.out.println(libro);
+                }
                 nuevaBusqueda.setVisible(true);
             }
         } catch (IOException | ClassNotFoundException e) {
