@@ -5,15 +5,10 @@
  */
 package controller;
 
-import controller.BooksJpaController;
-import Util.Books;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.TypedQuery;
 import recursos.RecursosXml;
 
 /**
