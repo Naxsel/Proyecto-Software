@@ -1,4 +1,5 @@
 -- Configrar BBDD, ejecutar mysql y realizar:
+CREATE DATABASE IF NOT EXISTS opboooks;
 
 CREATE TABLE IF NOT EXISTS `books` (
 `id_book` int(10) unsigned NOT NULL,
