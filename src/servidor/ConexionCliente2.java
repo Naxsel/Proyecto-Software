@@ -88,9 +88,6 @@ public class ConexionCliente extends Thread implements Observer{
                     case EDIT:
                         modificar(entradaRecibida);
                         break;
-                    case DATE:
-                        buscarFechas(entradaRecibida);
-                        break;
                 }
             } catch (IOException ex) {
                 if (login != null) {
@@ -223,23 +220,23 @@ public class ConexionCliente extends Thread implements Observer{
     }
 
     private void modificar(Request entradaRecibida) {
-        try {
-            booksController.update((Books)entradaRecibida.getDummy());
-            salidaDatos.writeObject(new Reply<String>(Reply.TypeReply.OK, "PosOk"));
-        } catch (IOException ex) {
-            Logger.getLogger(ConexionCliente.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private void buscarFechas(Request entradaRecibida) {
-        Vector<Books> resultados;
-        try {
-            resultados = booksController.buscarPorFechas((String) entradaRecibida.getDummy());
-            salidaDatos.writeObject(new Reply<Vector>(Reply.TypeReply.VECTOR, resultados));
-        } catch (SQLException ex) {
-            Logger.getLogger(ConexionCliente.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException e){
-            Logger.getLogger(ConexionCliente.class.getName()).log(Level.SEVERE, null, e);
-        }
+//        EntityManagerFactory emf = Persistence.createEntityManagerFactory("ServidosPU");
+//        EntityManager em = emf.createEntityManager();
+//        BooksJpaController service =  new BooksJpaController(emf);
+//        em.getTransaction().begin();
+//        try {
+//            service.edit((Books) entradaRecibida.getDummy());
+//        } catch (Exception ex) {
+//            Logger.getLogger(ConexionCliente.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        em.getTransaction().commit();
+//        System.out.println("Modificado" + (Books) entradaRecibida.getDummy());
+//        em.close();
+//        emf.close();
+//        try {
+//            salidaDatos.writeObject(new Reply<String>(Reply.TypeReply.OK, "http://pythoniza.me/wp-content/uploads/2014/10/ibHNQU.png"));
+//        } catch (IOException ex) {
+//            Logger.getLogger(ConexionCliente.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 }
