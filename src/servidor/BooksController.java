@@ -184,7 +184,7 @@ class BooksController {
     Vector<Books> buscarPorFechas(String fechas) throws SQLException {
         Vector<Books> resultado = new Vector<>();
         Statement sentencia = conexion.createStatement();
-        String[] fecha = fechas.split(" ");
+        String[] fecha = fechas.split("-");
         ResultSet result = sentencia.executeQuery("SELECT * FROM books WHERE "
                     + "date>='" + fecha[0] + "' and date<='" + fecha[1] + "'");
 
