@@ -106,15 +106,21 @@ public class Menu extends javax.swing.JFrame {
             util.ClientSend dummy = new util.ClientSend("localhost", 8080);
             // Envío del request y recepción de reply
             util.Reply respuesta = dummy.send2Server(peticion);
-            System.out.println("**" + (Vector)respuesta.getDummy());
+            // PARA COMPROBACIONES
+            // System.out.println("**" + (Vector)respuesta.getDummy());
             // tratamiento de la respuesta
             if (respuesta.getReply() == util.Reply.TypeReply.OK) {
                 Busqueda nuevaBusqueda = new Busqueda();
                 nuevaBusqueda.setVisible(true);
             } else if (respuesta.getReply() == util.Reply.TypeReply.BOOK) {
                 Busqueda nuevaBusqueda = new Busqueda();
-                //util.Books libro = (util.Books)respuesta.getDummy();
-                nuevaBusqueda.NuevoLibro((String)respuesta.getDummy());
+                Vector<util.Books> vec = (Vector<util.Books>)respuesta.getDummy();
+                nuevaBusqueda.NuevoLibro(vec);
+                nuevaBusqueda.setVisible(true);
+            } else if (respuesta.getReply() == util.Reply.TypeReply.VECTOR) {
+                Busqueda nuevaBusqueda = new Busqueda();
+                Vector<util.Books> vec = (Vector<util.Books>)respuesta.getDummy();
+                nuevaBusqueda.NuevoLibro(vec);
                 nuevaBusqueda.setVisible(true);
             }
         } catch (IOException | ClassNotFoundException e) {

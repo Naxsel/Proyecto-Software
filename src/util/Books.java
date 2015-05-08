@@ -252,14 +252,26 @@ public class Books implements Serializable {
         }
         return true;
     }
-
+    
     @Override
     public String toString(){
         return "ISBN: " + isbn + "\nTitle: " + title + "\nAuthor: " + author +
                 "\nGenre: " + genre + "\nDate: " + date +
                 "\nImage: " + img + "\nEditor: " + publisher + "\nDescripción: " + info;
     }
-
+    
+    public String toHtml(){
+        return "<html>" +
+                "ISBN: " + isbn +
+                "<br />Title: " +title +
+                "<br />Author: " + author +
+                "<br />Genre: " + genre +
+                "<br />Date: " + date +
+                "<br />Editor: " + publisher +
+                "<br />Descripción: " + info +
+                "</html>";
+    }
+    
     /**
      * A simple test
      */

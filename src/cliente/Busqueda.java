@@ -10,37 +10,70 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
+import javax.swing.border.EmptyBorder;
+import util.*;
+import java.util.Vector;
+import java.util.Collections;
 
 /**
  *
  * @author adrian
  */
 public class Busqueda extends javax.swing.JFrame {
-
+	
+	private Vector<util.Books> actualVec;
+	
     /**
      * Creates new form ClienteUI
      */
     public Busqueda() {
         initComponents();
+        actualVec = new Vector<util.Books>();
     }
 
     /**
-     * Añade un libro
-     * @param imagen: imagen del libro
+     * Añade un vector de libros
+     * @param vec: vector de libros a mostrar
      * @throws java.io.IOException
      */
-    public void NuevoLibro(String imagen) throws IOException {
-        // Cargar la url de la imagen a un Jlabel
-        URL url = new URL(imagen);
-        Image img = ImageIO.read(url);
-        JLabel label = new JLabel(new ImageIcon(img.getScaledInstance(125, 150, 2)));
+    public void NuevoLibro(Vector<util.Books> vec) throws IOException {
+        
+        // Guardar vector actual
+        actualVec = vec;
+        
+        // Crear un jPanel
+        JPanel panel = new JPanel();
+        // Definir alineación vertical
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        // Definir margenes
+        panel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        
+        // Añadir todos los libros del vector
+        boolean primera = true; // para evitar el separador la primera vez
+        for (util.Books libro : vec) {
+            // Cargar la url de la imagen
+            URL url = new URL(libro.getImg());
+            Image img = ImageIO.read(url);
 
-        // Añadir el Jlabel
-        jScrollPane1.setViewportView(label);
-
-        // Y visualizamos de nuevo
-        //this.pack();
-        //this.setVisible(true);
+            // Crear el JLabel con la imagen y el texto
+            JLabel label = new JLabel(libro.toHtml(), new ImageIcon(img.getScaledInstance(125, 150, 2)), 2);
+            
+            // Si no es la primera, añadir el separador al JPanel
+            if (!primera) {
+                panel.add(Box.createVerticalStrut(20));
+                panel.add(new JSeparator(SwingConstants.HORIZONTAL));
+                panel.add(Box.createVerticalStrut(20));
+            } else {
+                primera = false;
+            }
+            
+            // Añadir el JLabel al JPanel
+            panel.add(label);
+        }
+        
+        // Mostrar el nuevo JPanel en el JScrollPane
+        jScrollPane1.setViewportView(panel);
+        
     }
 
     /**
@@ -99,7 +132,14 @@ public class Busqueda extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-
+        if (!actualVec.isEmpty()) {
+        	try {
+        		//Collections.sort(actualVec);
+        		NuevoLibro(actualVec);
+        	} catch (IOException ex) {
+        		ex.printStackTrace();
+        	}
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
