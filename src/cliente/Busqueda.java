@@ -15,6 +15,8 @@ import util.*;
 import java.util.Vector;
 import java.util.Comparator;
 import java.util.Collections;
+import java.io.File;
+import java.net.MalformedURLException;
 
 /**
  *
@@ -38,7 +40,7 @@ public class Busqueda extends javax.swing.JFrame {
      * @throws java.io.IOException
      */
     public void NuevoLibro(Vector<util.Books> vec) throws IOException {
-        
+        Image img;
         // Guardar vector actual
         actualVec = vec;
         
@@ -53,8 +55,16 @@ public class Busqueda extends javax.swing.JFrame {
         boolean primera = true; // para evitar el separador la primera vez
         for (util.Books libro : vec) {
             // Cargar la url de la imagen
-            URL url = new URL(libro.getImg());
-            Image img = ImageIO.read(url);
+			
+			try{
+            	URL url = new URL(libro.getImg());
+				img = ImageIO.read(url);
+			} catch(MalformedURLException e){
+				System.out.println("Error en la imagen a cargar.");
+				File url = new File("config" + 
+					System.getProperty("file.separator") + "default_img.png");
+				img = ImageIO.read(url);
+			};
 
             // Crear el JLabel con la imagen y el texto
             JLabel label = new JLabel(libro.toHtml(), new ImageIcon(img.getScaledInstance(125, 150, 2)), 2);
@@ -92,7 +102,7 @@ public class Busqueda extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
 
         jToolBar1.setRollover(true);
 
