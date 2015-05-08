@@ -2,7 +2,9 @@ package admin;
 
 import java.io.IOException;
 import java.util.Scanner;
+import java.lang.NumberFormatException;
 import util.*;
+import java.util.Vector;
 
 /**
  * Created by agustin on 1/4/15.
@@ -11,12 +13,22 @@ public class console {
 
     private static ClientSend server;
 
+	/**
+	  * Ejecuta la consola del cliente.
+	  * @param args[0] : Dirección ip del servidor
+	  * @param args[1] : Puerto del servidor
+	  */
     public static void main(String args[]) {
         Scanner input = new Scanner(System.in);
         String action;
+		if (args.length != 2){
+			System.out.println("Parametros erroneos, dirección del servidor "
+				+ "puerto.");
+			return;
+		}
 
         try {
-            server = new ClientSend("localhost", 8080);
+            server = new ClientSend(args[0], Integer.parseInt(args[1]));
             while (true) {
                 System.out.print("Acción (h ayuda): ");
                 action = input.nextLine();
@@ -34,18 +46,24 @@ public class console {
                     case "d":
                         erase();
                         break;
+					case "q":
+						System.out.println("Adios. :)");
+						return;
                     default:
                         System.out.println("Comando no reconocido.");
                         break;
                 }
             }
         } catch (IOException e){
-            System.out.println("Problema con el servidor");
+            System.out.println("Problema con el servidor.");
             return;
         } catch (ClassNotFoundException e){
-            System.out.println("Problema con el servidor");
+            System.out.println("Problema con el servidor.");
             return;
-        }
+        } catch	(NumberFormatException e){
+			System.out.println("Problema con el puerto dado.");
+			return;
+		}
     }
 
     /**
@@ -57,6 +75,7 @@ public class console {
         System.out.println("a - añadir un nuevo libro a la colección.");
         System.out.println("m - modifica un nuevo libro a la colección.");
         System.out.println("d - borra un libro de la colección.");
+		System.out.println("q - salir del programa.");
     }
 
     /**
@@ -156,6 +175,7 @@ public class console {
         String isbn;
         Request request;
         Reply reply;
+		Vector<Books> devuelto;
 
         System.out.print("ISBN del libro a borrar: ");
         isbn = input.nextLine();
@@ -164,11 +184,21 @@ public class console {
             System.out.print("ISBN del libro a borrar: ");
             isbn = input.nextLine();
         }
+		//Busca el libro
+        request = new Request(Request.TypeRequest.ISBN, isbn);
+        reply = server.send2Server(request);
+        if (reply.getReply() == Reply.TypeReply.VECTOR){
+            devuelto = (Vector) reply.getDummy();
+			if (devuelto.size() == 0){
+				System.out.println("No se ha encontrado el libro.");
+				return;
+			}
+		}
         request = new Request(Request.TypeRequest.DELETE, isbn);
         reply = server.send2Server(request);
 
         if (reply.getReply() == Reply.TypeReply.OK){
-            System.out.println("Libro borrado correctamente");
+            System.out.println("Libro borrado correctamente.");
         } else{
             System.out.println("El libro no se pudo borrar correctamente");
         }
@@ -183,8 +213,9 @@ public class console {
         Request request;
         Reply reply;
         Books libro;
+		Vector<Books> devuelto;
 
-        System.out.print("ISBN del libro a borrar: ");
+        System.out.print("ISBN del libro a modificar: ");
         isbn = input.nextLine();
         while(isbn == null || isbn.equals("")){
             System.out.println("ISBN erroneo");
@@ -195,27 +226,37 @@ public class console {
         //Busca el libro
         request = new Request(Request.TypeRequest.ISBN, isbn);
         reply = server.send2Server(request);
-        if (reply.getReply() == Reply.TypeReply.BOOK){
-            libro = (Books) reply.getDummy();
-
+        if (reply.getReply() == Reply.TypeReply.VECTOR){
+            devuelto = (Vector) reply.getDummy();
+			if (devuelto.size() == 0){
+				System.out.println("No se ha encontrado el libro.");
+				return;
+			}
+			
+			libro = devuelto.firstElement();
             //Pide la nueva info del libro
             while(true) {
-                System.out.print("Parámetro a cambiar (TITULO, AUTOR, EDITOR, DESCRIPCION, GENERO, FECHA, ISBN, IMAGEN)" +
-                        ", fin para acabar: ");
+                System.out.print("Parámetro a cambiar (TITULO, AUTOR, EDITOR,"
+						+ " DESCRIPCION, GENERO, FECHA, ISBN, IMAGEN)" +
+                        ", FIN para acabar: ");
                 type = input.nextLine();
-                while(type != null || type.equals("")){
+                while(type == null || type.equals("")){
                     System.out.println("Parámetro no valido.");
-                    System.out.print("Parámetro a cambiar (TITULO, AUTOR, EDITOR, DESCRIPCION, GENERO, FECHA, ISBN, IMAGEN)" +
-                            ", fin para acabar: ");
+                    System.out.print("Parámetro a cambiar (TITULO, AUTOR, EDITOR,"
+							+ " DESCRIPCION, GENERO, FECHA, ISBN, IMAGEN)" +
+                            ", FIN para acabar: ");
                     type = input.nextLine();
                 }
-                System.out.print("Nuevo valor: ");
-                change = input.nextLine();
-                while(change != null || change.equals("")){
-                    System.out.println("Valor no valido.");
-                    System.out.println("Nuevo valor: ");
-                    change = input.nextLine();
-                }
+				if (!type.equals("FIN")){
+                	System.out.print("Nuevo valor: ");
+                	change = input.nextLine();
+                	while(change == null || change.equals("")){
+                   		System.out.println("Valor no valido.");
+                	    System.out.print("Nuevo valor: ");
+                	    change = input.nextLine();
+                	}
+				}
+				else change="";
                 switch (type){
                     case "TITULO" :
                         libro.setTitle(change);
@@ -233,7 +274,14 @@ public class console {
                         libro.setGenre(change);
                         break;
                     case "FECHA" :
-                        libro.setDate(change);
+						try{
+							Integer.parseInt(change);
+                        } catch(NumberFormatException e){
+							System.out.println("La fecha es un número, negativo"
+								+ " si es de antes de cristo.");
+							break;
+						}
+						libro.setDate(change);
                         break;
                     case "ISBN" :
                         libro.setIsbn(change);

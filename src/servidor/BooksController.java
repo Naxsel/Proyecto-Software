@@ -207,7 +207,8 @@ class BooksController {
     public void update(Books libro) {
         try {
             String updateTableSQL = "UPDATE books SET title = ?, author = ?,"
-                    + " genre = ?, date = ?, img = ?, publisher = ?, info = ? WHERE id_book = ?";
+                    + " genre = ?, date = ?, img = ?, publisher = ?, info = ?," 
+					+ " isbn = ? WHERE id_book = ?";
             PreparedStatement preSta = conexion.prepareStatement(updateTableSQL);
             preSta.setString(1, libro.getTitle());
             preSta.setString(2, libro.getAuthor());
@@ -216,7 +217,8 @@ class BooksController {
             preSta.setString(5, libro.getImg());
             preSta.setString(6, libro.getPublisher());
             preSta.setString(7, libro.getInfo());
-            preSta.setInt(8, libro.getIdBook());
+			preSta.setString(8, libro.getIsbn());
+            preSta.setInt(9, libro.getIdBook());
             preSta.execute();
             
         } catch (SQLException ex) {
