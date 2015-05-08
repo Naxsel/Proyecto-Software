@@ -13,6 +13,7 @@ import java.net.URL;
 import javax.swing.border.EmptyBorder;
 import util.*;
 import java.util.Vector;
+import java.util.Comparator;
 import java.util.Collections;
 
 /**
@@ -138,7 +139,45 @@ public class Busqueda extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (!actualVec.isEmpty()) {
         	try {
-        		//Collections.sort(actualVec);
+				int seleccion = jComboBox1.getSelectedIndex();
+				switch (seleccion) {
+				    case 0: Collections.sort(actualVec, new Comparator<util.Books>(){
+								public int compare(util.Books primero, util.Books segundo) {
+									 return primero.getIsbn().compareTo(segundo.getIsbn());
+								}
+							});
+				            break;
+					case 1: Collections.sort(actualVec, new Comparator<util.Books>(){
+								public int compare(util.Books primero, util.Books segundo) {
+									 return primero.getTitle().compareTo(segundo.getTitle());
+								}
+							});
+				            break;
+					case 2: Collections.sort(actualVec, new Comparator<util.Books>(){
+								public int compare(util.Books primero, util.Books segundo) {
+									 return primero.getAuthor().compareTo(segundo.getAuthor());
+								}
+							});
+				            break;
+					case 3: Collections.sort(actualVec, new Comparator<util.Books>(){
+								public int compare(util.Books primero, util.Books segundo) {
+									 return primero.getPublisher().compareTo(segundo.getPublisher());
+								}
+							});
+				            break;
+					case 4: Collections.sort(actualVec, new Comparator<util.Books>(){
+								public int compare(util.Books primero, util.Books segundo) {
+									 return primero.getGenre().compareTo(segundo.getGenre());
+								}
+							});
+				            break;
+				    default: Collections.sort(actualVec, new Comparator<util.Books>(){
+								public int compare(util.Books primero, util.Books segundo) {
+									 return primero.getDate().compareTo(segundo.getDate());
+								}
+							});
+				            break;
+				}
         		NuevoLibro(actualVec);
         	} catch (IOException ex) {
         		ex.printStackTrace();
