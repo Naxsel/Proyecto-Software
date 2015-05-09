@@ -1,3 +1,3 @@
 #!/bin/bash
 
-java -cp ./bin cliente/Menu
+java -cp ./bin cliente/Menu localhost 8080

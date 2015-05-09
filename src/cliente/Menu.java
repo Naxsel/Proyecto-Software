@@ -17,6 +17,7 @@ import java.util.Comparator;
 import java.util.Collections;
 import java.io.File;
 import java.net.MalformedURLException;
+import java.lang.NumberFormatException;
 
 /**
  *
@@ -27,6 +28,9 @@ public class Menu extends javax.swing.JFrame {
 	private Vector<util.Books> actualVec;
 	private Vector<util.Books> seleccion;
 	private Vector<JCheckBox> checkVec;
+
+	private static String host;
+	private static int port;
 	
     /**
      * Creates new form ClienteUI
@@ -275,6 +279,17 @@ public class Menu extends javax.swing.JFrame {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
+		if (args.length != 2){
+			System.out.println("Número de parametros erroneos.");
+			return;
+		}
+		host = args[0];
+		try{
+			port = Integer.parseInt(args[1]);
+		} catch(NumberFormatException e){
+			System.out.println("Error en el segundo parametro.");
+			return;
+		}
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
