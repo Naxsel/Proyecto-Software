@@ -24,14 +24,18 @@ import java.net.MalformedURLException;
  */
 public class Busqueda extends javax.swing.JFrame {
 	
+	private Menu padre;
+	
 	private Vector<util.Books> actualVec;
+	private Vector<util.Books> seleccion;
+	private Vector<JCheckBox> checkVec;
 	
     /**
      * Creates new form ClienteUI
      */
-    public Busqueda() {
+    public Busqueda(Menu p) {
         initComponents();
-        actualVec = new Vector<util.Books>();
+        padre = p;
     }
 
     /**
@@ -41,6 +45,12 @@ public class Busqueda extends javax.swing.JFrame {
      */
     public void NuevoLibro(Vector<util.Books> vec) throws IOException {
         Image img;
+        
+        // instanciamos los vectores
+        actualVec = new Vector<util.Books>();
+        seleccion = new Vector<util.Books>();
+        checkVec = new Vector<JCheckBox>();
+        
         // Guardar vector actual
         actualVec = vec;
         
@@ -68,7 +78,10 @@ public class Busqueda extends javax.swing.JFrame {
 
             // Crear el JLabel con la imagen y el texto
             JLabel label = new JLabel(libro.toHtml(), new ImageIcon(img.getScaledInstance(125, 150, 2)), 2);
-            
+		    
+		    // Instanciar el checkbox correspondiente
+		    checkVec.add(new JCheckBox("Añadir", false));
+		    
             // Si no es la primera, añadir el separador al JPanel
             if (!primera) {
                 panel.add(Box.createVerticalStrut(20));
@@ -80,6 +93,9 @@ public class Busqueda extends javax.swing.JFrame {
             
             // Añadir el JLabel al JPanel
             panel.add(label);
+            
+            // Añadir el JCheckBox
+            panel.add(checkVec.lastElement());
         }
         
         // Mostrar el nuevo JPanel en el JScrollPane
@@ -97,17 +113,18 @@ public class Busqueda extends javax.swing.JFrame {
     private void initComponents() {
 
         jToolBar1 = new javax.swing.JToolBar();
-        jLabel1 = new javax.swing.JLabel();
+        //jLabel1 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox();
         jButton1 = new javax.swing.JButton();
+        boton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
+        setDefaultCloseOperation(this.HIDE_ON_CLOSE);
 
         jToolBar1.setRollover(true);
 
-        jLabel1.setText("Puede reordenar su búsqueda:");
-        jToolBar1.add(jLabel1);
+        //jLabel1.setText("Puede reordenar su búsqueda:");
+        //jToolBar1.add(jLabel1);
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { 
 			"ISBN", "Título", "Autor", "Editorial", "Género", "Fecha" }));
@@ -123,7 +140,23 @@ public class Busqueda extends javax.swing.JFrame {
             }
         });
         jToolBar1.add(jButton1);
-
+        
+        // Separación horizontal
+        jToolBar1.add(Box.createHorizontalStrut(20));
+        
+        //configurar el botón para añadir a la lista
+        boton.setText("Añadir Selección a la lista");
+	    boton.setFocusable(false);
+	    boton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+	    boton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+	    boton.addActionListener(new java.awt.event.ActionListener() {
+	        public void actionPerformed(java.awt.event.ActionEvent evt) {
+	            botonActionPerformed(evt);
+	        }
+	    });
+	    // Añadir el botón
+        jToolBar1.add(boton);
+        
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -146,7 +179,6 @@ public class Busqueda extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
         if (!actualVec.isEmpty()) {
         	try {
 				int seleccion = jComboBox1.getSelectedIndex();
@@ -194,17 +226,27 @@ public class Busqueda extends javax.swing.JFrame {
         	}
         }
     }//GEN-LAST:event_jButton1ActionPerformed
-
+    
+    private void botonActionPerformed(java.awt.event.ActionEvent evt) {
+    	for (int i = 0; i < checkVec.size(); i++) {
+    		if (checkVec.get(i).isSelected()) {
+    			seleccion.add(actualVec.get(i));
+    		}
+    	}
+    	padre.AddSeleccion(seleccion);
+    }
+    
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+     
+//    public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
-        try {
+/*        try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
@@ -224,19 +266,20 @@ public class Busqueda extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(Busqueda.class.getName()).log(
 				java.util.logging.Level.SEVERE, null, ex);
         }
-
+*/
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
+/*        java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Busqueda().setVisible(true);
+                new Busqueda(this).setVisible(true);
             }
         });
     }
-
+*/
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton boton;
     private javax.swing.JComboBox jComboBox1;
-    private javax.swing.JLabel jLabel1;
+    //private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToolBar jToolBar1;
     // End of variables declaration//GEN-END:variables
