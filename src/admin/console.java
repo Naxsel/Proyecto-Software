@@ -261,7 +261,7 @@ public class console {
                     case "TITULO" :
                         libro.setTitle(change);
                         break;
-                    case "AUTHOR" :
+                    case "AUTOR" :
                         libro.setAuthor(change);
                         break;
                     case "EDITOR" :

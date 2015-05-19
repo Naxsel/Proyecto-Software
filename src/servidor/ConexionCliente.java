@@ -235,6 +235,10 @@ public class ConexionCliente extends Thread implements Observer{
         Vector<Books> resultados;
         try {
             resultados = booksController.buscarPorFechas((String) entradaRecibida.getDummy());
+			if (resultados == null){
+			   	salidaDatos.writeObject(new Reply<Vector>(Reply.TypeReply.FAIL, null));
+				return ;
+			}
             salidaDatos.writeObject(new Reply<Vector>(Reply.TypeReply.VECTOR, resultados));
         } catch (SQLException ex) {
             Logger.getLogger(ConexionCliente.class.getName()).log(Level.SEVERE, null, ex);
