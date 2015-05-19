@@ -240,6 +240,7 @@ public class Menu extends javax.swing.JFrame {
             // tratamiento de la respuesta
             if (respuesta.getReply() == util.Reply.TypeReply.OK) {
                 Busqueda nuevaBusqueda = new Busqueda(this);
+                nuevaBusqueda.NuevoMensaje("<html>No se han encontrado libros correspondientes<br />a su búsqueda.</html>");
                 nuevaBusqueda.setVisible(true);
             } else if (respuesta.getReply() == util.Reply.TypeReply.BOOK) {
                 Busqueda nuevaBusqueda = new Busqueda(this);
@@ -249,7 +250,15 @@ public class Menu extends javax.swing.JFrame {
             } else if (respuesta.getReply() == util.Reply.TypeReply.VECTOR) {
                 Busqueda nuevaBusqueda = new Busqueda(this);
                 Vector<util.Books> vec = (Vector<util.Books>)respuesta.getDummy();
-                nuevaBusqueda.NuevoLibro(vec);
+                if (vec.size() == 0) {
+                	nuevaBusqueda.NuevoMensaje("<html>No se han encontrado libros correspondientes<br />a su búsqueda.</html>");
+                } else {
+                	nuevaBusqueda.NuevoLibro(vec);
+                }
+                nuevaBusqueda.setVisible(true);
+            } else {
+            	Busqueda nuevaBusqueda = new Busqueda(this);
+            	nuevaBusqueda.NuevoMensaje("<html>Se produjo un error al acceder a la base de datos.<br />Por favor, inténtelo de nuevo.</html>");
                 nuevaBusqueda.setVisible(true);
             }
         } catch (IOException | ClassNotFoundException e) {

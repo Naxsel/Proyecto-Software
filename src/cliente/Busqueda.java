@@ -102,6 +102,31 @@ public class Busqueda extends javax.swing.JFrame {
         jScrollPane1.setViewportView(panel);
         
     }
+    
+    /**
+     * Muestra una ventana emergente con un mensaje
+     * @param mensaje: string a mostrar
+     * @throws java.io.IOException
+     */
+    public void NuevoMensaje(String mensaje) throws IOException {
+        
+        // Crear un jPanel
+        JPanel panel = new JPanel();
+        // Definir alineación vertical
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        // Definir margenes
+        panel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        
+        // Crear el JLabel con el mensaje
+        JLabel label = new JLabel(mensaje);
+        
+        // Añadir el JLabel al JPanel
+        panel.add(label);
+        
+        // Mostrar el nuevo JPanel en el JScrollPane
+        jScrollPane1.setViewportView(panel);
+        
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
