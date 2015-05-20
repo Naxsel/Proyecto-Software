@@ -8,30 +8,4 @@
         <user>root</user>
         <passwd></passwd>
     </conexion>
-    <idioma>
-        <etiqueta>
-            <id>TITULO</id>
-            <texto>Agenda</texto>
-        </etiqueta>
-         <etiqueta>
-            <id>BT_NENTRADA</id>
-            <texto>Nueva entrada</texto>
-        </etiqueta>
-        <etiqueta>
-            <id>BT_EENTRADA</id>
-            <texto>Eliminar entrada</texto>
-        </etiqueta>
-         <etiqueta>
-            <id>BT_ALTA</id>
-            <texto>Alta</texto>
-        </etiqueta>
-         <etiqueta>
-            <id>BT_BAJA</id>
-            <texto>Baja</texto>
-        </etiqueta>
-        <etiqueta>
-            <id>BT_CERRAR</id>
-            <texto>Cerrar</texto>
-        </etiqueta>
-    </idioma>
 </Configuracion>
