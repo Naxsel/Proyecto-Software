@@ -1,6 +1,6 @@
 #!/bin/bash
 rm -rf ./bin
-mkdir ./bin
+mkdir ./bin 
 
 #javac -d ./bin/servidor -cp ".:/lib/*.jar" ./src/servidor/servidorchat/*.java
 # Util
