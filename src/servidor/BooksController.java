@@ -88,7 +88,7 @@ class BooksController {
     Vector<Books> buscarPorTitle(String title) throws SQLException {
         Vector<Books> resultado = new Vector<>();
         Statement sentencia = conexion.createStatement();
-        ResultSet result = sentencia.executeQuery("SELECT * FROM books WHERE title='" + title + "'");
+        ResultSet result = sentencia.executeQuery("SELECT * FROM books WHERE title like '%" + title + "%'");
 
         while (result.next()) {
             Books books = new Books(result.getInt("id_book"),
@@ -113,7 +113,7 @@ class BooksController {
     Vector<Books> buscarPorAuthor(String author) throws SQLException {
         Vector<Books> resultado = new Vector<>();
         Statement sentencia = conexion.createStatement();
-        ResultSet result = sentencia.executeQuery("SELECT * FROM books WHERE author='" + author + "'");
+        ResultSet result = sentencia.executeQuery("SELECT * FROM books WHERE author like '%" + author + "%'");
 
         while (result.next()) {
             Books books = new Books(result.getInt("id_book"),
